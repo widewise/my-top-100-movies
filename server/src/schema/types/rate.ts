@@ -1,0 +1,45 @@
+import {
+    GraphQLObjectType,
+    GraphQLInputObjectType,
+    GraphQLNonNull,
+    GraphQLID,
+    GraphQLInt,
+} from 'graphql';
+import { MovieType } from "./movie";
+
+export const RateType = new GraphQLObjectType({
+    name: 'RateType',
+    description: 'Movie rate by user',
+    fields: () => ({
+        id: {
+            type: new GraphQLNonNull(GraphQLID),
+        },
+        userId: {
+            type: new GraphQLNonNull(GraphQLID),
+        },
+        movie: {
+            type: new GraphQLNonNull(MovieType),
+        },
+        rate: {
+            type: GraphQLInt,
+            description: "Rate from 1 to 10",
+        },
+    }),
+});
+
+export const GiveMovieRateInputType = new GraphQLInputObjectType({
+    name: 'GiveMovieRateInputType',
+    description: 'Give rate to movie payload definition',
+    fields: () => ({
+        userId: {
+            type: new GraphQLNonNull(GraphQLID),
+        },
+        movieId: {
+            type: new GraphQLNonNull(GraphQLID),
+        },
+        rate: {
+            type: GraphQLInt,
+            description: "Rate from 1 to 10",
+        },
+    }),
+});
