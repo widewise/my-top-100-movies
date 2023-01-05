@@ -33,6 +33,8 @@ const MovieGenreType = new GraphQLEnumType({
         History: { value: EMovieGenre.History },
         Family: { value: EMovieGenre.Family },
         Fantasy: { value: EMovieGenre.Fantasy },
+        Music: { value: EMovieGenre.Music },
+        Mystery: { value: EMovieGenre.Mystery },
         Romance: { value: EMovieGenre.Romance },
         ScienceFiction: { value: EMovieGenre.ScienceFiction },
         Thriller: { value: EMovieGenre.Thriller },
@@ -62,7 +64,7 @@ export const MovieType = new GraphQLObjectType({
             type: GraphQLInt,
         },
         duration : {
-            type: new GraphQLNonNull(GraphQLInt),
+            type: GraphQLInt,
             description: "Movie duration in minutes"
         },
         description: {
@@ -97,7 +99,7 @@ export const CreateMovieInputType = new GraphQLInputObjectType({
             type: new GraphQLNonNull(GraphQLInt),
         },
         duration : {
-            type: new GraphQLNonNull(GraphQLInt),
+            type: GraphQLInt,
             description: "Movie duration in minutes"
         },
         description: {

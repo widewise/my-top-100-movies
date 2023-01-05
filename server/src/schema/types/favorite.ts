@@ -1,8 +1,7 @@
 import {
     GraphQLObjectType,
-    GraphQLInputObjectType,
     GraphQLNonNull,
-    GraphQLID,
+    GraphQLID, GraphQLBoolean,
 } from 'graphql';
 import { MovieType } from "./movie";
 
@@ -22,15 +21,12 @@ export const FavoriteType = new GraphQLObjectType({
     }),
 });
 
-export const AddFavoriteMovieInputType = new GraphQLInputObjectType({
-    name: 'AddFavoriteMovieInputType',
-    description: 'Add favorite movie payload definition',
+export const CheckFavoriteType = new GraphQLObjectType({
+    name: 'CheckFavoriteMovieType',
+    description: 'Check favorite movie',
     fields: () => ({
-        userId: {
-            type: new GraphQLNonNull(GraphQLID),
-        },
-        movieId: {
-            type: new GraphQLNonNull(GraphQLID),
-        },
+        isFavorite: {
+            type: new GraphQLNonNull(GraphQLBoolean),
+        }
     }),
 });

@@ -7,18 +7,20 @@ export enum EMovieType {
 
 export enum EMovieGenre {
     Action = 'action',
-    Comedy = 'comedy',
-    Drama = 'comedy',
-    ScienceFiction = 'science-fiction',
-    Fantasy = 'fantasy',
     Adventure = 'adventure',
-    Crime = 'crime',
-    Thriller = 'thriller',
     Animation = 'animation',
-    Family = 'family',
-    Horror = 'horror',
-    Romance = 'romance',
+    Comedy = 'comedy',
+    Crime = 'crime',
+    Drama = 'comedy',
     History = 'history',
+    Horror = 'horror',
+    Family = 'family',
+    Fantasy = 'fantasy',
+    Music = 'music',
+    Mystery = 'mystery',
+    Romance = 'romance',
+    ScienceFiction = 'science-fiction',
+    Thriller = 'thriller',
 }
 
 export interface IMovie {
@@ -28,7 +30,7 @@ export interface IMovie {
     genres: Array<EMovieGenre>;
     year: number;
     totalScore?: number;
-    duration: number;
+    duration?: number;
     description?: string;
     posterUrl?: string;
     directorId?: string;

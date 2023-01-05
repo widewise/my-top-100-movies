@@ -34,11 +34,11 @@ export const userMutations = {
                 type: new GraphQLNonNull(EditUserInputType),
             },
         },
-        resolve: (rootValue, { input }) => {
+        resolve: async (rootValue, { input }) => {
             if(!input.id) {
                 throw Error("User id is required");
             }
-            const updated = MovieModel.findByIdAndUpdate(input.id, {
+            const updated = await MovieModel.findByIdAndUpdate(input.id, {
                 password: input.password,
                 email: input.email,
                 description: input.description,
@@ -56,11 +56,11 @@ export const userMutations = {
                 type: new GraphQLNonNull(GraphQLID),
             },
         },
-        resolve: (rootValue, { userId }) => {
+        resolve: async (rootValue, { userId }) => {
             if(!userId) {
                 throw Error("User id is required");
             }
-            const removed = MovieModel.findByIdAndUpdate(userId, { status: EUserStatus.Removed }).exec();
+            const removed = await MovieModel.findByIdAndUpdate(userId, { status: EUserStatus.Removed }).exec();
             if (!removed) {
                 throw new Error('Remove user error')
             }

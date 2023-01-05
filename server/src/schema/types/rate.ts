@@ -5,7 +5,6 @@ import {
     GraphQLID,
     GraphQLInt,
 } from 'graphql';
-import { MovieType } from "./movie";
 
 export const RateType = new GraphQLObjectType({
     name: 'RateType',
@@ -17,8 +16,8 @@ export const RateType = new GraphQLObjectType({
         userId: {
             type: new GraphQLNonNull(GraphQLID),
         },
-        movie: {
-            type: new GraphQLNonNull(MovieType),
+        movieId: {
+            type: new GraphQLNonNull(GraphQLID),
         },
         rate: {
             type: GraphQLInt,

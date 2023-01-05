@@ -6,6 +6,7 @@ import {
     GraphQLID,
 } from 'graphql';
 import { PersonType } from "./person";
+import {MovieType} from "./movie";
 
 export const ActorType = new GraphQLObjectType({
     name: 'ActorType',
@@ -17,11 +18,14 @@ export const ActorType = new GraphQLObjectType({
         movieId: {
             type: new GraphQLNonNull(GraphQLID),
         },
+        movie: {
+            type: MovieType,
+        },
         personId: {
             type: new GraphQLNonNull(GraphQLID),
         },
         person: {
-            type: new GraphQLNonNull(PersonType),
+            type: PersonType,
         },
         role: {
             type: new GraphQLNonNull(GraphQLString),

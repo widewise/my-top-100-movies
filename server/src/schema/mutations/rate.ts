@@ -16,12 +16,19 @@ export const rateMutations = {
             },
         },
         resolve: (rootValue, { input }) => {
-            const newModel = new RateModel(input);
-            const newObj = newModel.save();
-            if(!newObj) {
-                throw Error("Giving rate to movie error");
+            let newRate = RateModel.findOneAndUpdate(
+                { movieId: input.movieId, userId: input.userId },
+                input,
+                {upsert: true});
+
+            if(!newRate) {
+                newRate = RateModel.findOne({ movieId: input.movieId, userId: input.userId });
+                if(!newRate) {
+                    throw Error("Rate movie error");
+                }
             }
-            return newObj;
+
+            return newRate;
         },
     },
 };

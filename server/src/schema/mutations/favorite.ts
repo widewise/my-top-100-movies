@@ -4,7 +4,6 @@ import {
 } from "graphql";
 import {
     FavoriteType,
-    AddFavoriteMovieInputType,
 } from "../types/favorite";
 import { FavoriteModel } from "../../data/favorite";
 
@@ -12,12 +11,20 @@ export const favoriteMutations = {
     addFavoriteMovie: {
         type: FavoriteType,
         args: {
-            input: {
-                type: new GraphQLNonNull(AddFavoriteMovieInputType),
+            movieId: {
+                type: new GraphQLNonNull(GraphQLID),
+            },
+            userId: {
+                type: new GraphQLNonNull(GraphQLID),
             },
         },
-        resolve: (rootValue, { input }) => {
-            const newModel = new FavoriteModel(input);
+        resolve: async (rootValue, { movieId, userId }) => {
+            const newFavorite = await FavoriteModel.findOne({ movieId, userId }).exec();
+            if(newFavorite) {
+                return newFavorite;
+            }
+
+            const newModel = new FavoriteModel({ movieId, userId });
             const newObj = newModel.save();
             if(!newObj) {
                 throw Error("Adding favorite movie error");
@@ -28,12 +35,15 @@ export const favoriteMutations = {
     removeFavoriteMovie: {
         type: FavoriteType,
         args: {
-            actorId: {
+            movieId: {
+                type: new GraphQLNonNull(GraphQLID),
+            },
+            userId: {
                 type: new GraphQLNonNull(GraphQLID),
             },
         },
-        resolve: (rootValue, { favoriteId }) => {
-            const removed = FavoriteModel.findByIdAndRemove(favoriteId).exec();
+        resolve: async (rootValue, { movieId, userId }) => {
+            const removed = await FavoriteModel.findOneAndRemove({ movieId, userId }).exec();
             if (!removed) {
                 throw new Error('Remove favorite movie error')
             }

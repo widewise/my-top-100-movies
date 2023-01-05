@@ -2,8 +2,10 @@ import express from 'express';
 import { graphqlHTTP } from "express-graphql";
 import * as mongoose from "mongoose";
 import schema from "./schema"
+import cors from "cors";
 
 const app = express();
+app.use(cors());
 
 mongoose.set("strictQuery", false);
 mongoose
@@ -25,6 +27,6 @@ app.get('/', (req, res) => {
    res.send('Hello world!');
 });
 
-app.listen(3000, () => {
+app.listen(5000, () => {
     console.log(`Express listen server`);
 });
