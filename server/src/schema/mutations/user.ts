@@ -6,11 +6,44 @@ import {
     UserType,
     RegistrationInputType,
     EditUserInputType,
+    UserTokenType,
+    LoginInputType,
 } from "../types/user";
-import { EUserStatus } from "../../data/user";
-import { MovieModel } from "../../data/movie";
+import {
+    EUserStatus,
+    UserModel,
+} from "../../data/user";
+import { private_key } from "../../utils/key";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export const userMutations = {
+    login: {
+        type: UserTokenType,
+        args: {
+            input: {
+                type: new GraphQLNonNull(LoginInputType),
+            },
+        },
+        resolve: async (_, {input}) => {
+            const user = await UserModel.findOne({ login: input.login }).exec();
+            if(!user) {
+                throw Error(`User with login ${input.login} doesn't exist`);
+            }
+
+            const isCorrectPassword = await bcrypt.compare(input.password, user.password);
+            if (!isCorrectPassword) {
+                throw new Error("Invalid credentials")
+            }
+            const token = jwt.sign({ _id: user._id, email: user.email }, private_key, {
+                algorithm: "RS256"
+            });
+            return {
+                token,
+                userId: user._id
+            }
+        }
+    },
     registration: {
         type: UserType,
         args: {
@@ -18,8 +51,12 @@ export const userMutations = {
                 type: new GraphQLNonNull(RegistrationInputType),
             },
         },
-        resolve: (rootValue, { input }) => {
-            const newModel = new MovieModel(input);
+        resolve: async (rootValue, { input }) => {
+            const isExists = await UserModel.exists({ login: input.login }).exec();
+            if(isExists !== null) {
+                throw Error(`User with login '${input.login}' exists`);
+            }
+            const newModel = new UserModel(input);
             const newObj = newModel.save();
             if(!newObj) {
                 throw Error("Registration error");
@@ -38,7 +75,7 @@ export const userMutations = {
             if(!input.id) {
                 throw Error("User id is required");
             }
-            const updated = await MovieModel.findByIdAndUpdate(input.id, {
+            const updated = await UserModel.findByIdAndUpdate(input.id, {
                 password: input.password,
                 email: input.email,
                 description: input.description,
@@ -60,7 +97,7 @@ export const userMutations = {
             if(!userId) {
                 throw Error("User id is required");
             }
-            const removed = await MovieModel.findByIdAndUpdate(userId, { status: EUserStatus.Removed }).exec();
+            const removed = await UserModel.findByIdAndUpdate(userId, { status: EUserStatus.Removed }).exec();
             if (!removed) {
                 throw new Error('Remove user error')
             }

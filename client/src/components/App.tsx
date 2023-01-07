@@ -4,9 +4,14 @@ import {
     RouterProvider,
 } from "react-router-dom"
 import './App.css';
+import { MainBar } from "./main-bar";
 import { Movies } from "./movies";
 import { MovieInfo } from "./movie-info";
 import { PersonInfo } from "./person-info";
+import { useAppApolloClient } from "../hooks/useAppApolloClient";
+import { ApolloProvider } from "@apollo/client";
+import { Authentication } from "./authentication";
+import { Registration } from "./registration";
 
 const router = createBrowserRouter([
     {
@@ -20,14 +25,28 @@ const router = createBrowserRouter([
     {
         path: "/person/:personId",
         element: <PersonInfo />
+    },
+    {
+        path: "/login",
+        element: <Authentication />
+    },
+    {
+        path: "/register",
+        element: <Registration />
     }
 ])
 
 
 function App() {
-  return (
+
+    const client = useAppApolloClient();
+
+    return (
     <div className="App">
-        <RouterProvider router={router} />
+        <ApolloProvider client={client}>
+            <MainBar />
+            <RouterProvider router={router} />
+        </ApolloProvider>
     </div>
   );
 }

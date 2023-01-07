@@ -4,6 +4,8 @@ import {
 } from 'graphql';
 import { RateModel } from "../../data/rate";
 import { RateType } from "../types/rate";
+import { IAuthContext } from "../../data/user";
+import { contextService } from "../../services/contextService";
 
 export const rateQueries = {
     getMovieRate: {
@@ -11,15 +13,13 @@ export const rateQueries = {
         args: {
             movieId: {
                 type: new GraphQLNonNull(GraphQLID),
-            },
-            userId: {
-                type: new GraphQLNonNull(GraphQLID),
-            },
+            }
         },
-        resolve: async (_, { movieId, userId }) => {
-            const rate = await RateModel.findOne({ movieId: movieId, userId: userId}).exec();
+        resolve: async (_, { movieId }, context: IAuthContext) => {
+            contextService.validateAuth(context);
+            const rate = await RateModel.findOne({ movieId: movieId, userId: context.userId}).exec();
             if(!rate) {
-                throw Error(`Can't find rate with movie id ${movieId} and user id ${userId}`);
+                throw Error(`Can't find rate with movie id ${movieId} and user id ${context.userId}`);
             }
             return rate;
         },

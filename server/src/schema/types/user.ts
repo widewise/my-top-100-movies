@@ -55,6 +55,20 @@ export const UserType = new GraphQLObjectType({
     }),
 });
 
+
+export const UserTokenType = new GraphQLObjectType({
+    name: 'UserTokenType',
+    description: 'User token',
+    fields: () => ({
+        token: {
+            type: new GraphQLNonNull(GraphQLString),
+        },
+        userId: {
+            type: new GraphQLNonNull(GraphQLID),
+        },
+    }),
+});
+
 export const RegistrationInputType = new GraphQLInputObjectType({
     name: 'RegistrationInputType',
     description: 'Registration payload definition',

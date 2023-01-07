@@ -30,9 +30,6 @@ export const GiveMovieRateInputType = new GraphQLInputObjectType({
     name: 'GiveMovieRateInputType',
     description: 'Give rate to movie payload definition',
     fields: () => ({
-        userId: {
-            type: new GraphQLNonNull(GraphQLID),
-        },
         movieId: {
             type: new GraphQLNonNull(GraphQLID),
         },

@@ -7,6 +7,7 @@ import { IMovieListItem } from "../../../../models/movie";
 import styled from "styled-components";
 import { ContextMenu, ContextMenuPanel } from "../../../context-menu";
 import { CardMedia } from "@mui/material";
+import {useAuthToken} from "../../../../hooks/useAuthToken";
 
 const MoviePosterPanel = styled.div`
     position: relative;
@@ -22,6 +23,7 @@ interface IProps {
 
 export const MoviePoster: FunctionComponent<IProps> = ({ movie }: IProps) => {
     const navigate = useNavigate();
+    const [authToken] = useAuthToken();
 
     const onPosterClick = useCallback(() => {
         navigate(`/movie/${movie.id}`);
@@ -32,7 +34,7 @@ export const MoviePoster: FunctionComponent<IProps> = ({ movie }: IProps) => {
             tabIndex={0}
             onClick={() => onPosterClick()}
         >
-            <ContextMenu movie={movie} />
+            {authToken && authToken !== "undefined" && <ContextMenu movie={movie} />}
             <CardMedia
                 component="img"
                 sx={{ width: 150 }}

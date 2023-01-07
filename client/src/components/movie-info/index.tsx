@@ -9,7 +9,8 @@ import { fmtDuration} from "../../utils/duration";
 import { Box, Typography } from "@mui/material";
 import LensIcon from '@mui/icons-material/Lens';
 import { ActorsList } from "./actors-list";
-import {MovieOperations} from "./operations";
+import { MovieOperations } from "./operations";
+import { useAuthToken } from "../../hooks/useAuthToken";
 
 const GET_MOVIE = gql`
     query GetMovieById($movieId: ID!) {
@@ -37,6 +38,7 @@ const MoviePosterImage = styled.img`
 
 export const MovieInfo = () => {
     const { movieId } = useParams();
+    const [authToken] = useAuthToken();
     const { loading: loadingMovie, data: movieData } = useQuery<IMovieResult>(
         GET_MOVIE,
         { variables: { movieId: movieId } });
@@ -91,7 +93,7 @@ export const MovieInfo = () => {
                             {fmtDuration(movie?.duration ?? 0)}
                         </Typography>
                     </Box>
-                    { movieId ? <MovieOperations movieId={movieId} /> : null}
+                    { movieId && authToken && authToken !== "undefined" && <MovieOperations movieId={movieId} />}
                     <Typography
                         variant="h5"
                         component="h5"
@@ -107,6 +109,6 @@ export const MovieInfo = () => {
                     </Typography>
                 </Box>
             </Box>)}
-        { movieId ? <ActorsList movieId={movieId} /> : null}
+        { movieId && <ActorsList movieId={movieId} />}
     </div>);
 }

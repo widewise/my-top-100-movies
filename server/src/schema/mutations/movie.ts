@@ -11,6 +11,8 @@ import { RateModel } from "../../data/rate";
 import { ActorModel } from "../../data/actor";
 import { FavoriteModel } from "../../data/favorite";
 import { CallbackError } from "mongoose";
+import {IAuthContext} from "../../data/user";
+import {contextService} from "../../services/contextService";
 
 export const movieMutations = {
     createMovie: {
@@ -20,7 +22,9 @@ export const movieMutations = {
                 type: new GraphQLNonNull(CreateMovieInputType),
             },
         },
-        resolve: (rootValue, { input }) => {
+        resolve: (rootValue, { input }, context: IAuthContext) => {
+            contextService.checkIsAdmin(context);
+
             const newModel = new MovieModel(input);
             const newObj = newModel.save();
             if(!newObj) {
@@ -36,10 +40,13 @@ export const movieMutations = {
                 type: new GraphQLNonNull(GraphQLID),
             },
         },
-        resolve: (rootValue, { movieId }) => {
+        resolve: (rootValue, { movieId }, context: IAuthContext) => {
             if(!movieId) {
                 throw Error("Movie id is required");
             }
+
+            contextService.checkIsAdmin(context);
+
             ActorModel.deleteMany({ movieId: movieId }, (error: CallbackError) => {
                 console.error(error.message);
             });

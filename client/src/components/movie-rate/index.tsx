@@ -6,15 +6,14 @@ import { useMutation } from "@apollo/react-hooks";
 
 interface IProps {
     movieId: string;
-    userId: string;
     anchorEl: HTMLElement | null;
     onClose: (operation: string) => void;
 }
 
 const GET_MOVIE_RATE = gql`
-query GetMovieRate($movieId: ID!, $userId: ID!)
+query GetMovieRate($movieId: ID!)
 {
-  getMovieRate(movieId: $movieId, userId: $userId) {
+  getMovieRate(movieId: $movieId) {
     rate
   }
 }
@@ -30,12 +29,11 @@ mutation RateMovie($inputRate: GiveMovieRateInputType!) {
 
 export const MovieRate: FunctionComponent<IProps> = ({
     movieId,
-    userId,
     anchorEl,
     onClose,
 }: IProps) => {
     const rateOpen = Boolean(anchorEl);
-    const id = rateOpen ? 'simple-popover' : undefined;
+    const id = rateOpen ? 'rate-popover' : undefined;
     const handleRateClose = (event: React.MouseEvent<HTMLElement>) => {
         onClose("rate");
         event.stopPropagation();
@@ -46,7 +44,7 @@ export const MovieRate: FunctionComponent<IProps> = ({
         GET_MOVIE_RATE,
         {
             initialFetchPolicy: "no-cache",
-            variables: { movieId, userId }
+            variables: { movieId }
         });
 
     useEffect(() =>{
@@ -60,7 +58,7 @@ export const MovieRate: FunctionComponent<IProps> = ({
     const [addRate] = useMutation(SET_MOVIE_RATE);
 
     const handleChangeValue = (event: React.SyntheticEvent, newValue: number | null) => {
-        addRate({ variables: { inputRate: {movieId, userId, rate: newValue }}});
+        addRate({ variables: { inputRate: {movieId, rate: newValue }}});
         onClose("rate");
         event.stopPropagation();
     };
@@ -69,7 +67,6 @@ export const MovieRate: FunctionComponent<IProps> = ({
         event.stopPropagation();
     };
 
-    console.log({rate});
     return (<Popover
         id={id}
         open={rateOpen}

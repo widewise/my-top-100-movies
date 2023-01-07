@@ -3,8 +3,15 @@ import { graphqlHTTP } from "express-graphql";
 import * as mongoose from "mongoose";
 import schema from "./schema"
 import cors from "cors";
+import dotenv from "dotenv";
+import { verifyToken } from "./utils/jwt";
+
+dotenv.config();
 
 const app = express();
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 mongoose.set("strictQuery", false);
@@ -17,10 +24,20 @@ mongoose
     .then(() => console.log("Connected to database..."))
     .catch(err => console.error(err));
 
-app.use('/graphql', graphqlHTTP({
+app.use(verifyToken);
+
+app.use('/graphql', graphqlHTTP(req => ({
     schema,
     graphiql: true,
-}));
+    context: {
+        // @ts-ignore
+        isAuth: req.isAuth,
+        // @ts-ignore
+        userId: req.userId,
+        // @ts-ignore
+        userType: req.userType,
+    },
+})));
 
 
 app.get('/', (req, res) => {

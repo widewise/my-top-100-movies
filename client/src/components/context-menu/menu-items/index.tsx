@@ -22,25 +22,25 @@ interface Props {
 }
 
 const CHECK_FAVORITE_MOVIE = gql`
-query CheckFavoriteMovie($movieId: ID!, $userId: ID!)
+query CheckFavoriteMovie($movieId: ID!)
 {
-  checkFavoriteMovie(movieId: $movieId, userId: $userId) {
+  checkFavoriteMovie(movieId: $movieId) {
     isFavorite
   }
 }
 `;
 
 const ADD_FAVORITE_MOVIE = gql`
-mutation AddFavoriteMovie($movieId: ID!,$userId: ID!) {
-  addFavoriteMovie(movieId: $movieId, userId: $userId) {
+mutation AddFavoriteMovie($movieId: ID!) {
+  addFavoriteMovie(movieId: $movieId) {
     id
   }
 }
 `;
 
 const REMOVE_FAVORITE_MOVIE = gql`
-mutation RemoveFavoriteMovie($movieId: ID!,$userId: ID!) {
-  removeFavoriteMovie(movieId: $movieId, userId: $userId) {
+mutation RemoveFavoriteMovie($movieId: ID!) {
+  removeFavoriteMovie(movieId: $movieId) {
     id
   }
 }
@@ -51,8 +51,6 @@ export const ContextMenuItems: FunctionComponent<Props> = ({
     anchorContextEl,
     onClose,
 }: Props) => {
-    const userId = 'TODO_create_user';
-
     const [anchorRateEl, setAnchorRateEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorContextEl);
     const [isFavorite, setIsFavorite] = useState<boolean | null>(null);
@@ -60,7 +58,7 @@ export const ContextMenuItems: FunctionComponent<Props> = ({
         CHECK_FAVORITE_MOVIE,
         {
             initialFetchPolicy: "no-cache",
-            variables: { movieId, userId } });
+            variables: { movieId } });
 
     useEffect(() => {
         if(!loading) {
@@ -74,18 +72,19 @@ export const ContextMenuItems: FunctionComponent<Props> = ({
     const [removeFavorite] = useMutation(REMOVE_FAVORITE_MOVIE);
 
     const handleMenuItemClick = (event: React.MouseEvent<HTMLElement>, operation: string) => {
-        onClose();
         switch (operation){
             case "rate":
                 setAnchorRateEl(event.currentTarget);
                 break
             case "add-favorite":
-                addFavorite({ variables: { movieId, userId }});
+                addFavorite({ variables: { movieId }});
                 setIsFavorite(true);
+                onClose();
                 break
             case "remove-favorite":
-                removeFavorite({ variables: { movieId, userId }});
+                removeFavorite({ variables: { movieId }});
                 setIsFavorite(false);
+                onClose();
                 break
         }
         event.stopPropagation();
@@ -94,7 +93,6 @@ export const ContextMenuItems: FunctionComponent<Props> = ({
     return (<>
         {anchorRateEl && <MovieRate
             movieId={movieId}
-            userId={userId}
             anchorEl={anchorRateEl}
             onClose={() => onClose()}
         />}

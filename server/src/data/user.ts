@@ -1,4 +1,5 @@
 import { Schema, model, } from 'mongoose';
+import bcrypt from "bcrypt";
 
 export enum EUserType {
     User = 'user',
@@ -20,6 +21,13 @@ export interface IUser {
     description?: string;
 }
 
+export interface IAuthContext {
+    isAuth: boolean;
+    userId: string;
+    login: string;
+    userType: EUserType;
+}
+
 const userSchema = new Schema<IUser>({
     login: { type: String, required: true },
     type: {
@@ -38,5 +46,10 @@ const userSchema = new Schema<IUser>({
     email: { type: String, required: false },
     description: { type: String, required: false },
 });
+
+userSchema.pre('save', async function () {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+})
 
 export const UserModel = model<IUser>("user", userSchema);

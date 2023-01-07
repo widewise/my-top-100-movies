@@ -3,7 +3,7 @@ import React, {
     useEffect,
     useState,
 } from "react";
-import {Box, IconButton} from "@mui/material";
+import { Box, IconButton } from "@mui/material";
 import { gql, useQuery } from "@apollo/client";
 import { ICheckFavoriteResult } from "../../../models/favorite";
 import { useMutation } from "@apollo/react-hooks";
@@ -17,25 +17,25 @@ interface IProps {
 }
 
 const CHECK_FAVORITE_MOVIE = gql`
-query CheckFavoriteMovie($movieId: ID!, $userId: ID!)
+query CheckFavoriteMovie($movieId: ID!)
 {
-  checkFavoriteMovie(movieId: $movieId, userId: $userId) {
+  checkFavoriteMovie(movieId: $movieId) {
     isFavorite
   }
 }
 `;
 
 const ADD_FAVORITE_MOVIE = gql`
-mutation AddFavoriteMovie($movieId: ID!,$userId: ID!) {
-  addFavoriteMovie(movieId: $movieId, userId: $userId) {
+mutation AddFavoriteMovie($movieId: ID!) {
+  addFavoriteMovie(movieId: $movieId) {
     id
   }
 }
 `;
 
 const REMOVE_FAVORITE_MOVIE = gql`
-mutation RemoveFavoriteMovie($movieId: ID!,$userId: ID!) {
-  removeFavoriteMovie(movieId: $movieId, userId: $userId) {
+mutation RemoveFavoriteMovie($movieId: ID!) {
+  removeFavoriteMovie(movieId: $movieId) {
     id
   }
 }
@@ -44,7 +44,6 @@ mutation RemoveFavoriteMovie($movieId: ID!,$userId: ID!) {
 export const MovieOperations: FunctionComponent<IProps> = ({
     movieId
 }:IProps) => {
-    const userId = 'TODO_create_user';
     const [anchorRateEl, setAnchorRateEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorRateEl);
 
@@ -52,7 +51,7 @@ export const MovieOperations: FunctionComponent<IProps> = ({
         CHECK_FAVORITE_MOVIE,
         {
             initialFetchPolicy: "no-cache",
-            variables: { movieId, userId } });
+            variables: { movieId } });
     const [isFavorite, setIsFavorite] = useState<boolean | null>(null);
 
     useEffect(() => {
@@ -71,11 +70,11 @@ export const MovieOperations: FunctionComponent<IProps> = ({
                 setAnchorRateEl(event.currentTarget);
                 break
             case "add-favorite":
-                addFavorite({ variables: { movieId, userId }});
+                addFavorite({ variables: { movieId }});
                 setIsFavorite(true);
                 break
             case "remove-favorite":
-                removeFavorite({ variables: { movieId, userId }});
+                removeFavorite({ variables: { movieId }});
                 setIsFavorite(false);
                 break
         }
@@ -88,7 +87,6 @@ export const MovieOperations: FunctionComponent<IProps> = ({
          }}>
         {anchorRateEl && <MovieRate
             movieId={movieId}
-            userId={userId}
             anchorEl={anchorRateEl}
             onClose={() => setAnchorRateEl(null)}
         />}

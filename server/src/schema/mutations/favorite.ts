@@ -6,6 +6,8 @@ import {
     FavoriteType,
 } from "../types/favorite";
 import { FavoriteModel } from "../../data/favorite";
+import { IAuthContext } from "../../data/user";
+import { contextService } from "../../services/contextService";
 
 export const favoriteMutations = {
     addFavoriteMovie: {
@@ -14,17 +16,16 @@ export const favoriteMutations = {
             movieId: {
                 type: new GraphQLNonNull(GraphQLID),
             },
-            userId: {
-                type: new GraphQLNonNull(GraphQLID),
-            },
         },
-        resolve: async (rootValue, { movieId, userId }) => {
-            const newFavorite = await FavoriteModel.findOne({ movieId, userId }).exec();
+        resolve: async (rootValue, { movieId }, context: IAuthContext) => {
+            contextService.validateAuth(context);
+
+            const newFavorite = await FavoriteModel.findOne({ movieId, userId: context.userId }).exec();
             if(newFavorite) {
                 return newFavorite;
             }
 
-            const newModel = new FavoriteModel({ movieId, userId });
+            const newModel = new FavoriteModel({ movieId, userId: context.userId });
             const newObj = newModel.save();
             if(!newObj) {
                 throw Error("Adding favorite movie error");
@@ -38,12 +39,11 @@ export const favoriteMutations = {
             movieId: {
                 type: new GraphQLNonNull(GraphQLID),
             },
-            userId: {
-                type: new GraphQLNonNull(GraphQLID),
-            },
         },
-        resolve: async (rootValue, { movieId, userId }) => {
-            const removed = await FavoriteModel.findOneAndRemove({ movieId, userId }).exec();
+        resolve: async (rootValue, { movieId }, context: IAuthContext) => {
+            contextService.validateAuth(context);
+
+            const removed = await FavoriteModel.findOneAndRemove({ movieId, userId: context.userId }).exec();
             if (!removed) {
                 throw new Error('Remove favorite movie error')
             }

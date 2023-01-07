@@ -11,13 +11,13 @@ interface IProps {
 export const MovieCard: FunctionComponent<IProps> = ({
   movie
 }: IProps)  => (<Card
-        sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            width: 150,
-            height: 320,
-        }}
-    >
-        <MoviePoster movie={movie} />
-        <MovieCardDetails movie={movie} />
-    </Card>);
+    sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: 150,
+        height: 320,
+    }}
+>
+    <MoviePoster movie={movie} />
+    <MovieCardDetails movie={movie} />
+</Card>);
