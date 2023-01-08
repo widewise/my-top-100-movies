@@ -105,8 +105,8 @@ export const EditUserInputType = new GraphQLInputObjectType({
     name: 'EditUserInputType',
     description: 'Edit user payload definition',
     fields: () => ({
-        id: {
-            type: new GraphQLNonNull(GraphQLID),
+        oldPassword: {
+            type: GraphQLString,
         },
         password: {
             type: GraphQLString,

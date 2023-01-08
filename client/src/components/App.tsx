@@ -12,6 +12,7 @@ import { useAppApolloClient } from "../hooks/useAppApolloClient";
 import { ApolloProvider } from "@apollo/client";
 import { Authentication } from "./authentication";
 import { Registration } from "./registration";
+import {Profile} from "./profile";
 
 const router = createBrowserRouter([
     {
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
     {
         path: "/register",
         element: <Registration />
+    },
+    {
+        path: "/profile",
+        element: <Profile />
     }
 ])
 

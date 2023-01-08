@@ -3,7 +3,8 @@ export interface IUserResult {
 }
 
 export interface IProfile {
-    id: string;
+    type: string,
     login: string;
     email: string;
+    description: string;
 }
