@@ -1,25 +1,22 @@
-import React from "react";
-import { gql, useQuery } from "@apollo/client";
+import React, {useState} from "react";
 import { useParams } from "react-router";
-import { IPersonResult } from "../../models/person";
+import { useNavigate } from "react-router-dom";
+import { gql } from "@apollo/client";
+import { useMutation } from "@apollo/react-hooks";
+import { useUserType } from "../../hooks/useUserType";
+import { usePersonQuery } from "../../hooks/usePersonQuery";
 import styled from "styled-components";
-import { Box, Typography } from "@mui/material";
+import {
+    Alert,
+    Box,
+    IconButton,
+    Snackbar,
+    Typography,
+} from "@mui/material";
 import { PersonAttribute } from "./attribute";
 import { PersonMoviesList } from "./movies-list";
-
-const GET_PERSON = gql`
-  query GetPersonById($personId: ID!)
-  {
-    personById(personId: $personId) {
-      id
-      name
-      gender
-      biography
-      birthdate
-      birthplace
-     photoUrl
-  }
-}`;
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const PersonPhotoImage = styled.img`
   height: 450px;
@@ -47,14 +44,48 @@ const PersonNameField = styled(MainInformationField)`
   font-weight: bold;
 `;
 
+
+const DELETE_PERSON = gql`
+mutation DeletePerson($personId: ID!) {
+    removePerson(personId: $personId) {
+        id
+    }
+}
+`;
+
 export const PersonInfo = () => {
     const { personId } = useParams();
-    const { loading, data } = useQuery<IPersonResult>(
-        GET_PERSON,
-        { variables: { personId: personId } });
-    const person = data?.personById;
+    const navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = useState("");
+    const { loadingPerson, person } = usePersonQuery(personId ?? "");
+    const [userType] = useUserType();
+    const [deletePerson] = useMutation(DELETE_PERSON);
+
+    const handleOperationClick = (event: React.MouseEvent<HTMLElement>, operation: string) => {
+        switch (operation){
+            case "edit":
+                navigate(`/person/${personId}/edit`);
+                break;
+            case "delete":
+                deletePerson({ variables: { personId } })
+                    .then(() => navigate("/"))
+                    .catch((reason: any) => setErrorMessage(reason.message));
+                break;
+        }
+        event.stopPropagation();
+    };
+
+    const handleClose = () => {
+        setErrorMessage("");
+    };
+
     return (<>
-        {loading || !data ? (<p>Loading person...</p>) : (
+        <Snackbar open={errorMessage.length > 0} autoHideDuration={6000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+                {errorMessage}
+            </Alert>
+        </Snackbar>
+        {loadingPerson || !person ? (<p>Loading person...</p>) : (
             <PersonInformationContainer>
                 <Box ml={4}>
                     <PersonPhotoImage src={person?.photoUrl ?? ''} alt="Photo" />
@@ -74,9 +105,27 @@ export const PersonInfo = () => {
                     </Box>
                 </Box>
                 <Box>
-                    <PersonNameField variant="h4" component="h4" mt={2}>
-                        {person?.name}
-                    </PersonNameField>
+                    <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <PersonNameField variant="h4" component="h4">
+                            {person?.name}
+                        </PersonNameField>
+                        {userType === "admin" &&<>
+                            <IconButton
+                                sx={{ marginLeft: 1 }}
+                                onClick={(e) => handleOperationClick(e, "edit")}
+                                color="inherit"
+                            >
+                                <EditIcon fontSize="inherit" />
+                            </IconButton>
+                            <IconButton
+                                sx={{ marginLeft: 1 }}
+                                onClick={(e) => handleOperationClick(e, "delete")}
+                                color="inherit"
+                            >
+                                <DeleteIcon fontSize="inherit" />
+                            </IconButton>
+                        </>}
+                    </Box>
                     <MainInformationField variant="h5" component="h5" mt={2}>
                         Biography
                     </MainInformationField>

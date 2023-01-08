@@ -5,6 +5,7 @@ import {
 import {
     PersonType,
     CreatePersonInputType,
+    InputPersonType,
 } from "../types/person";
 import { PersonModel } from "../../data/person";
 import { ActorModel } from "../../data/actor";
@@ -30,10 +31,29 @@ export const personMutations = {
             return newObj;
         },
     },
+    updatePerson: {
+        type: PersonType,
+        args: {
+            input: {
+                type: new GraphQLNonNull(InputPersonType),
+            },
+        },
+        resolve: async (rootValue, { input }, context: IAuthContext) => {
+            contextService.checkIsAdmin(context);
+
+            const updated = await PersonModel.findByIdAndUpdate(input.id, input).exec();
+
+            if (!updated) {
+                throw new Error('Update person error');
+            }
+
+            return updated;
+        },
+    },
     removePerson: {
         type: PersonType,
         args: {
-            movieId: {
+            personId: {
                 type: new GraphQLNonNull(GraphQLID),
             },
         },

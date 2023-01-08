@@ -46,7 +46,7 @@ export const movieMutations = {
             const updated = await MovieModel.findByIdAndUpdate(input.id, input).exec();
 
             if (!updated) {
-                throw new Error('Update user error');
+                throw new Error('Update movie error');
             }
 
             return updated;

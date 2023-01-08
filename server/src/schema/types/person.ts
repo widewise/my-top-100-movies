@@ -19,31 +19,43 @@ const GenderType = new GraphQLEnumType({
     }
 });
 
+const personFields = {
+    id: {
+        type: new GraphQLNonNull(GraphQLID),
+    },
+    name: {
+        type: new GraphQLNonNull(GraphQLString),
+    },
+    gender: {
+        type: new GraphQLNonNull(GenderType),
+    },
+    biography: {
+        type: GraphQLString
+    },
+    birthdate: {
+        type: GraphQLDate,
+    },
+    birthplace: {
+        type: GraphQLString,
+    },
+    photoUrl: {
+        type: GraphQLString,
+    },
+}
+
 export const PersonType = new GraphQLObjectType({
     name: 'PersonType',
     description: 'Person',
     fields: () => ({
-        id: {
-            type: new GraphQLNonNull(GraphQLID),
-        },
-        name: {
-            type: new GraphQLNonNull(GraphQLString),
-        },
-        gender: {
-            type: new GraphQLNonNull(GenderType),
-        },
-        biography: {
-            type: GraphQLString
-        },
-        birthdate: {
-            type: GraphQLDate,
-        },
-        birthplace: {
-            type: GraphQLString,
-        },
-        photoUrl: {
-            type: GraphQLString,
-        },
+        ...personFields,
+    }),
+});
+
+export const InputPersonType = new GraphQLInputObjectType({
+    name: 'InputPersonType',
+    description: 'Input person',
+    fields: () => ({
+        ...personFields,
     }),
 });
 

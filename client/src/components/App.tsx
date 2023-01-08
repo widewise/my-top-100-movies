@@ -14,6 +14,7 @@ import { ApolloProvider } from "@apollo/client";
 import { Authentication } from "./authentication";
 import { Profile } from "./profile";
 import { Registration } from "./registration";
+import {PersonEditor} from "./person-editor";
 
 const router = createBrowserRouter([
     {
@@ -33,8 +34,16 @@ const router = createBrowserRouter([
         element: <MovieEditor />
     },
     {
+        path: "/person/new",
+        element: <PersonEditor />
+    },
+    {
         path: "/person/:personId",
         element: <PersonInfo />
+    },
+    {
+        path: "/person/:personId/edit",
+        element: <PersonEditor />
     },
     {
         path: "/login",

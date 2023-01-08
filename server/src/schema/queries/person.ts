@@ -1,7 +1,4 @@
-import {
-    GraphQLID,
-    GraphQLNonNull,
-} from 'graphql';
+import { GraphQLID } from "graphql";
 import { PersonType } from "../types/person";
 import { PersonModel } from "../../data/person";
 
@@ -10,10 +7,18 @@ export const personQueries = {
         type: PersonType,
         args: {
             personId: {
-                type: new GraphQLNonNull(GraphQLID),
+                type: GraphQLID,
             },
         },
         resolve: (_, { personId }) => {
+            if(!personId) {
+                return {
+                    id: "",
+                    name: "",
+                    gender: "male",
+                };
+            }
+
             return PersonModel.findById(personId);
         }
     },

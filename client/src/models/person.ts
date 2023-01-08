@@ -1,6 +1,6 @@
 export enum EGender {
-    Female = 'female',
-    Male = 'male',
+    Female = 'Female',
+    Male = 'Male',
 }
 
 export interface IPerson {
