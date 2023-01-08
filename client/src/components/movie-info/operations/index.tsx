@@ -3,14 +3,18 @@ import React, {
     useEffect,
     useState,
 } from "react";
-import { Box, IconButton } from "@mui/material";
+import {Alert, Box, IconButton, Snackbar} from "@mui/material";
 import { gql, useQuery } from "@apollo/client";
 import { ICheckFavoriteResult } from "../../../models/favorite";
 import { useMutation } from "@apollo/react-hooks";
 import GradeIcon from '@mui/icons-material/Grade';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { MovieRate } from "../../movie-rate";
+import { useUserType } from "../../../hooks/useUserType";
+import { useNavigate } from "react-router-dom";
 
 interface IProps {
     movieId: string;
@@ -41,11 +45,21 @@ mutation RemoveFavoriteMovie($movieId: ID!) {
 }
 `;
 
+const DELETE_MOVIE = gql`
+mutation DeleteMovie($movieId: ID!) {
+    removeMovie(movieId: $movieId) {
+        id
+    }
+}
+`;
+
 export const MovieOperations: FunctionComponent<IProps> = ({
     movieId
 }:IProps) => {
+    const navigate = useNavigate();
     const [anchorRateEl, setAnchorRateEl] = useState<null | HTMLElement>(null);
     const open = Boolean(anchorRateEl);
+    const [errorMessage, setErrorMessage] = useState("");
 
     const { loading, data } = useQuery<ICheckFavoriteResult>(
         CHECK_FAVORITE_MOVIE,
@@ -62,8 +76,10 @@ export const MovieOperations: FunctionComponent<IProps> = ({
         }
     }, [loading]);
 
+    const [userType] = useUserType();
     const [addFavorite] = useMutation(ADD_FAVORITE_MOVIE);
     const [removeFavorite] = useMutation(REMOVE_FAVORITE_MOVIE);
+    const [deleteMovie] = useMutation(DELETE_MOVIE);
     const handleOperationClick = (event: React.MouseEvent<HTMLElement>, operation: string) => {
         switch (operation){
             case "rate":
@@ -77,14 +93,32 @@ export const MovieOperations: FunctionComponent<IProps> = ({
                 removeFavorite({ variables: { movieId }});
                 setIsFavorite(false);
                 break
+            case "edit":
+                navigate(`/movie/${movieId}/edit`);
+                break;
+            case "delete":
+                deleteMovie({ variables: { movieId } })
+                    .then(() => navigate("/"))
+                    .catch((reason: any) => setErrorMessage(reason.message));
+                break;
         }
         event.stopPropagation();
     };
+
+    const handleClose = () => {
+        setErrorMessage("");
+    };
+
     return (<Box mt={2} ml={2}
          sx={{
              display: 'flex',
              alignItems: 'center'
          }}>
+        <Snackbar open={errorMessage.length > 0} autoHideDuration={6000} onClose={handleClose}>
+            <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+                {errorMessage}
+            </Alert>
+        </Snackbar>
         {anchorRateEl && <MovieRate
             movieId={movieId}
             anchorEl={anchorRateEl}
@@ -111,5 +145,19 @@ export const MovieOperations: FunctionComponent<IProps> = ({
         >
             <GradeIcon fontSize="inherit" />
         </IconButton>
+        {userType === "admin" &&<>
+            <IconButton
+                onClick={(e) => handleOperationClick(e, "edit")}
+                color="inherit"
+            >
+                <EditIcon fontSize="inherit" />
+            </IconButton>
+            <IconButton
+                onClick={(e) => handleOperationClick(e, "delete")}
+                color="inherit"
+            >
+                <DeleteIcon fontSize="inherit" />
+            </IconButton>
+        </>}
     </Box>);
 }

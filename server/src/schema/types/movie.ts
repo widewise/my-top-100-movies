@@ -41,44 +41,56 @@ const MovieGenreType = new GraphQLEnumType({
     }
 });
 
+const movieFields = {
+    id: {
+        type: new GraphQLNonNull(GraphQLID),
+    },
+    name: {
+        type: new GraphQLNonNull(GraphQLString),
+    },
+    type: {
+        type: new GraphQLNonNull(MovieTypeType),
+    },
+    genres: {
+        type: new GraphQLList(MovieGenreType),
+    },
+    year: {
+        type: new GraphQLNonNull(GraphQLInt),
+    },
+    totalScore : {
+        type: GraphQLInt,
+    },
+    duration : {
+        type: GraphQLInt,
+        description: "Movie duration in minutes"
+    },
+    description: {
+        type: GraphQLString,
+    },
+    posterUrl: {
+        type: GraphQLString,
+    },
+}
+
 export const MovieType = new GraphQLObjectType({
     name: 'MovieType',
     description: 'Movie',
     fields: () => ({
-        id: {
-            type: new GraphQLNonNull(GraphQLID),
-        },
-        name: {
-            type: new GraphQLNonNull(GraphQLString),
-        },
-        type: {
-            type: new GraphQLNonNull(MovieTypeType),
-        },
-        genres: {
-            type: new GraphQLList(MovieGenreType),
-        },
-        year: {
-            type: new GraphQLNonNull(GraphQLInt),
-        },
-        totalScore : {
-            type: GraphQLInt,
-        },
-        duration : {
-            type: GraphQLInt,
-            description: "Movie duration in minutes"
-        },
-        description: {
-            type: GraphQLString,
-        },
-        posterUrl: {
-            type: GraphQLString,
-        },
+        ...movieFields,
         director: {
             type: PersonType,
         },
         producer: {
             type: PersonType,
         },
+    }),
+});
+
+export const InputMovieType = new GraphQLInputObjectType({
+    name: 'InputMovieType',
+    description: 'Input movie',
+    fields: () => ({
+        ...movieFields,
     }),
 });
 

@@ -10,12 +10,18 @@ import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import { Button } from "@mui/material";
-import { useAuthToken } from "../../hooks/useAuthToken";
 import { Link } from "@mui/material";
+import MenuIcon from '@mui/icons-material/Menu';
+import { useAuthToken } from "../../hooks/useAuthToken";
+import { useUserType } from "../../hooks/useUserType";
 
+const pages = [
+    { key: 'Create movie', url: "/movie/new" },
+    { key: 'Create person', url: "/person/new" },
+];
 const settings = [
     { key: "Profile", url: "/profile" },
-    { key: "Logout", url: "" }
+    { key: "Logout", url: "" },
 ];
 
 const logoIcon = <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 273.42 35.52">
@@ -37,7 +43,9 @@ const logoIcon = <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 273.42 35.
 
 export const MainBar = () => {
     const [authToken, removeAuthToken] = useAuthToken();
+    const [userType, removeUserType] = useUserType();
 
+    const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
     const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElUser(event.currentTarget);
@@ -47,33 +55,128 @@ export const MainBar = () => {
         switch (menuKey) {
             case "Logout":
                 removeAuthToken();
+                removeUserType();
                 break;
         }
         setAnchorElUser(null);
     };
 
+    const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
+        setAnchorElNav(event.currentTarget);
+    };
+
+    const handleCloseNavMenu = () => {
+        setAnchorElNav(null);
+    };
+
     return (<AppBar position="static">
         <Container maxWidth="xl">
             <Toolbar disableGutters>
-                <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
-                    <Box sx={{ width: 100, marginX: 2 }}>{logoIcon}</Box>
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="a"
-                        href="/"
-                        sx={{
-                            mr: 2,
-                            display: 'flex',
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
-                    >
-                        TOP 100 MOVIES
-                    </Typography>
+                <Box sx={{
+                    display: { xs: 'none', md: 'flex' },
+                    width: 100,
+                    marginX: 2
+                }}>
+                    {logoIcon}
+                </Box>
+                <Typography
+                    variant="h6"
+                    noWrap
+                    component="a"
+                    href="/"
+                    sx={{
+                        mr: 2,
+                        display: { xs: 'none', md: 'flex' },
+                        fontFamily: 'monospace',
+                        fontWeight: 700,
+                        fontSize: 18,
+                        letterSpacing: '.3rem',
+                        color: 'inherit',
+                        textDecoration: 'none',
+                    }}
+                >
+                    TOP 100 MOVIES
+                </Typography>
+
+                <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+                    {userType === "admin" && <>
+                        <IconButton
+                            size="large"
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={handleOpenNavMenu}
+                            color="inherit"
+                        >
+                            <MenuIcon />
+                        </IconButton>
+                        <Menu
+                            id="menu-appbar"
+                            anchorEl={anchorElNav}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'left',
+                            }}
+                            open={Boolean(anchorElNav)}
+                            onClose={handleCloseNavMenu}
+                            sx={{
+                                display: { xs: 'block', md: 'none' },
+                            }}
+                        >
+                            {pages.map((page) => (
+                                <MenuItem key={page.key} onClick={handleCloseNavMenu}>
+                                    {page.url && <Link
+                                        color="inherit"
+                                        underline="none"
+                                        href={page.url}>
+                                        {page.key}
+                                    </Link>}
+                                    {!page.url && <Typography textAlign="center">{page.key}</Typography>}
+                                </MenuItem>
+                            ))}
+                        </Menu>
+                    </>}
+                </Box>
+                <Box sx={{
+                    display: { xs: 'flex', md: 'none' },
+                    width: 100,
+                    marginX: 2
+                }}>
+                    {logoIcon}
+                </Box>
+                <Typography
+                    variant="h5"
+                    noWrap
+                    component="a"
+                    href=""
+                    sx={{
+                        mr: 2,
+                        display: { xs: 'flex', md: 'none' },
+                        flexGrow: 1,
+                        fontFamily: 'monospace',
+                        fontWeight: 700,
+                        fontSize: 18,
+                        letterSpacing: '.3rem',
+                        color: 'inherit',
+                        textDecoration: 'none',
+                    }}
+                >
+                    TOP 100 MOVIES
+                </Typography>
+                <Box key="full-app" sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                    {userType === "admin" && pages.map((page) => (<Link
+                            key={page.key}
+                            color="inherit"
+                            underline="none"
+                            mx="10px"
+                            href={page.url}>
+                            {page.key}
+                        </Link>))}
                 </Box>
 
                 <Box sx={{ flexGrow: 0 }}>

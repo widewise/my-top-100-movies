@@ -41,6 +41,7 @@ export const userMutations = {
             });
             return {
                 token,
+                userType: user.type,
                 userId: user._id
             }
         }

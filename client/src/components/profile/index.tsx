@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import styled from "styled-components";
 import {
     Alert,
     AlertTitle,
@@ -6,20 +7,21 @@ import {
     Button,
     Card,
     CardHeader,
-    FormControl, IconButton,
+    FormControl,
+    IconButton,
     TextField,
     Typography,
 } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@apollo/react-hooks";
 import { gql, useQuery } from "@apollo/client";
-import { AlertColor } from "@mui/material/Alert/Alert";
 import { IUserResult } from "../../models/user";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useNavigate } from "react-router-dom";
 import { useAuthToken } from "../../hooks/useAuthToken";
-import styled from "styled-components";
-import {useLoginMutation} from "../../hooks/useLoginMutation";
+import { useLoginMutation } from "../../hooks/useLoginMutation";
+import { useUserType } from "../../hooks/useUserType";
+import { IMessage } from "../../models/common";
 
 const GET_PROFILE = gql`
 query Profile {
@@ -54,17 +56,12 @@ const ChangePasswordTitle = styled(Typography)`
   }
 `;
 
-interface IMessage {
-    title: string;
-    severity: AlertColor;
-    message: string;
-}
-
 export const Profile = () => {
     const [ message, setMessage ] = useState<IMessage>();
     const { handleSubmit, register, watch, formState: { errors } } = useForm();
     const navigate = useNavigate();
-    const [ _, removeAuthToken ] = useAuthToken();
+    const [ , removeAuthToken ] = useAuthToken();
+    const [ , removeUserType ] = useUserType();
     const [ loginMutation ] = useLoginMutation();
     const { loading, data } = useQuery<IUserResult>(GET_PROFILE);
     const profile = data?.profile;
@@ -95,6 +92,7 @@ export const Profile = () => {
         deleteUser()
             .then(() => {
                 removeAuthToken();
+                removeUserType();
                 navigate("/");
             })
             .catch((err) => setMessage({title: "Delete user", severity: "error", message: err.message}));

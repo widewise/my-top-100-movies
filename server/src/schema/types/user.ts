@@ -63,6 +63,9 @@ export const UserTokenType = new GraphQLObjectType({
         token: {
             type: new GraphQLNonNull(GraphQLString),
         },
+        userType: {
+            type: new GraphQLNonNull(GraphQLString),
+        },
         userId: {
             type: new GraphQLNonNull(GraphQLID),
         },

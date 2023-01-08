@@ -2,8 +2,6 @@ import React from "react";
 import { useParams } from "react-router";
 import styled from "styled-components";
 import 'react-multi-carousel/lib/styles.css';
-import { gql, useQuery } from "@apollo/client";
-import { IMovieResult } from "../../models/movie";
 import { MovieType } from "./movie-type";
 import { fmtDuration} from "../../utils/duration";
 import { Box, Typography } from "@mui/material";
@@ -11,22 +9,7 @@ import LensIcon from '@mui/icons-material/Lens';
 import { ActorsList } from "./actors-list";
 import { MovieOperations } from "./operations";
 import { useAuthToken } from "../../hooks/useAuthToken";
-
-const GET_MOVIE = gql`
-    query GetMovieById($movieId: ID!) {
-      movieById(movieId: $movieId) {
-        id
-        name
-        type
-        genres
-        year
-        totalScore
-        duration
-        description
-        posterUrl
-      }
-    }
-`;
+import { useMovieQuery } from "../../hooks/useMovieQuery";
 
 const MoviePosterImage = styled.img`
   height: 320px;
@@ -39,12 +22,9 @@ const MoviePosterImage = styled.img`
 export const MovieInfo = () => {
     const { movieId } = useParams();
     const [authToken] = useAuthToken();
-    const { loading: loadingMovie, data: movieData } = useQuery<IMovieResult>(
-        GET_MOVIE,
-        { variables: { movieId: movieId } });
-    const movie = movieData?.movieById;
+    const { loadingMovie, movie } = useMovieQuery(movieId ?? "");
     return (<div>
-        {loadingMovie || !movieData ? (<p>Loading movie ...</p>) : (
+        {loadingMovie || !movie ? (<p>Loading movie ...</p>) : (
             <Box component="div" sx={{
                 display: 'flex',
                 p: 2,

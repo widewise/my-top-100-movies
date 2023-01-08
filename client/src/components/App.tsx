@@ -6,13 +6,14 @@ import {
 import './App.css';
 import { MainBar } from "./main-bar";
 import { Movies } from "./movies";
+import { MovieEditor } from "./movie-editor";
 import { MovieInfo } from "./movie-info";
 import { PersonInfo } from "./person-info";
 import { useAppApolloClient } from "../hooks/useAppApolloClient";
 import { ApolloProvider } from "@apollo/client";
 import { Authentication } from "./authentication";
+import { Profile } from "./profile";
 import { Registration } from "./registration";
-import {Profile} from "./profile";
 
 const router = createBrowserRouter([
     {
@@ -20,8 +21,16 @@ const router = createBrowserRouter([
         element: <Movies />,
     },
     {
+        path: "/movie/new",
+        element: <MovieEditor />
+    },
+    {
         path: "/movie/:movieId",
         element: <MovieInfo />
+    },
+    {
+        path: "/movie/:movieId/edit",
+        element: <MovieEditor />
     },
     {
         path: "/person/:personId",

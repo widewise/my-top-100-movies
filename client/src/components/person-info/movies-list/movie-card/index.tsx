@@ -22,7 +22,6 @@ interface IProps {
 }
 
 export const PersonMovieCard: FunctionComponent<IProps> = ({ movie }: IProps) => {
-    console.log({movie});
     const navigate = useNavigate();
     const onPosterClick = useCallback(() => {
         navigate(`/movie/${movie.movie.id}`);
