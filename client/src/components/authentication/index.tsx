@@ -26,8 +26,7 @@ export const Authentication = () => {
 
     return (
         <div style={{ margin: "auto", padding: "100px" }}>
-            <FormControl sx={{ width: '300px' }}
-            >
+            <FormControl sx={{ width: '300px' }}>
                 {errorMessage && <Alert
                     severity="error"
                     sx={{ marginBottom: 4}}

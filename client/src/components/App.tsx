@@ -14,7 +14,7 @@ import { ApolloProvider } from "@apollo/client";
 import { Authentication } from "./authentication";
 import { Profile } from "./profile";
 import { Registration } from "./registration";
-import {PersonEditor} from "./person-editor";
+import { PersonEditor } from "./person-editor";
 
 const router = createBrowserRouter([
     {

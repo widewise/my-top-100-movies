@@ -5,6 +5,8 @@ import {
 } from 'graphql';
 import { ActorType } from "../types/actor";
 import { ActorModel } from "../../data/actor";
+import { PersonType } from "../types/person";
+import { PersonModel } from "../../data/person";
 
 export const actorQueries = {
     actorsByMovieId: {
@@ -75,6 +77,21 @@ export const actorQueries = {
                 actor.movie.id = actor.movie._id;
             }
             return actors;
+        },
+    },
+    personsToAddToMovie: {
+        type: new GraphQLList(PersonType),
+        args: {
+            movieId: {
+                type: new GraphQLNonNull(GraphQLID),
+            },
+        },
+        resolve: async (_, { movieId }) => {
+            const movieActorsPersons = await ActorModel.find(
+                { movieId: movieId},
+                { role:0, _id: 0, movieId:0 }).exec();
+            const movieActorsPersonIds = movieActorsPersons.map(o => o.personId);
+            return await PersonModel.find({ _id: { $nin: movieActorsPersonIds } }).exec();
         },
     },
 };

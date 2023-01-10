@@ -175,7 +175,7 @@ export const Profile = () => {
                     {...register("confirmPassword", {
                         min: 3,
                         validate: (val: string) => {
-                            if (watch('password') != val) {
+                            if (watch('password') !== val) {
                                 return "Your passwords do no match";
                             }
                         },

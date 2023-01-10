@@ -16,3 +16,12 @@ export interface IPerson {
 export interface IPersonResult {
     personById: IPerson;
 }
+
+export interface IPersonLite {
+    id: string;
+    name: string;
+}
+
+export interface IPersonDictionaryResult {
+    personsToAddToMovie: Array<IPersonLite>;
+}
