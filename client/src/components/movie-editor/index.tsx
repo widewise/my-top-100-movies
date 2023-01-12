@@ -61,7 +61,7 @@ export const MovieEditor = () => {
                     updateMovieInput: {
                         ...data,
                         id: movieId,
-                        genres: data.genres.split(","),
+                        genres: !Array.isArray(data.genres) ? data.genres.split(",") : data.genres,
                         duration: parseInt(data.duration),
                         year: parseInt(data.year),
                     }

@@ -1,13 +1,9 @@
-import {
-    FunctionComponent,
-    useCallback,
-} from "react";
-import { useNavigate } from "react-router-dom";
+import { FunctionComponent } from "react";
 import { IMovieListItem } from "../../../../models/movie";
 import styled from "styled-components";
 import { ContextMenu, ContextMenuPanel } from "../../../context-menu";
-import { CardMedia } from "@mui/material";
-import {useAuthToken} from "../../../../hooks/useAuthToken";
+import { CardActionArea, CardMedia } from "@mui/material";
+import { useAuthToken } from "../../../../hooks/useAuthToken";
 
 const MoviePosterPanel = styled.div`
     position: relative;
@@ -22,25 +18,19 @@ interface IProps {
 }
 
 export const MoviePoster: FunctionComponent<IProps> = ({ movie }: IProps) => {
-    const navigate = useNavigate();
     const [authToken] = useAuthToken();
 
-    const onPosterClick = useCallback(() => {
-        navigate(`/movie/${movie.id}`);
-    }, []);
-
     return (
-        <MoviePosterPanel
-            tabIndex={0}
-            onClick={() => onPosterClick()}
-        >
+        <MoviePosterPanel tabIndex={0}>
             {authToken && authToken !== "undefined" && <ContextMenu movie={movie} />}
-            <CardMedia
-                component="img"
-                sx={{ width: 150 }}
-                image={movie.posterUrl ?? ''}
-                alt="No poster"
-            />
+            <CardActionArea href={`/movie/${movie.id}`}>
+                <CardMedia
+                    component="img"
+                    sx={{ width: 150, height: 225 }}
+                    image={movie.posterUrl ?? ''}
+                    alt="No poster"
+                />
+            </CardActionArea>
         </MoviePosterPanel>
     );
 };

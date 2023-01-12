@@ -39,11 +39,6 @@ app.use('/graphql', graphqlHTTP(req => ({
     },
 })));
 
-
-app.get('/', (req, res) => {
-   res.send('Hello world!');
-});
-
 app.listen(5000, () => {
     console.log(`Express listen server`);
 });

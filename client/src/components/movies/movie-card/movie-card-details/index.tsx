@@ -7,6 +7,7 @@ const MovieDetailsPanel = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  padding: 5px 3px;
 `;
 
 interface IProps {
@@ -19,7 +20,16 @@ export const MovieCardDetails: FunctionComponent<IProps> = ({ movie }: IProps) =
             href={`/movie/${movie.id}`}
             underline="none"
             color="inherit"
-            sx={{ fontWeight: 'bold' }}
+            sx={{
+                fontWeight: "bold",
+                overflow: "hidden",
+                textOverflow:"ellipsis",
+                display: "-webkit-box",
+                WebkitLineClamp: "3",
+                WebkitBoxOrient: "vertical",
+                maxWidth: 140,
+                maxHeight: 60
+            }}
         >
             {movie.name}
         </Link>

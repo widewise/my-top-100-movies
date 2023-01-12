@@ -57,6 +57,7 @@ export const PersonEditor = () => {
                 variables: {
                     updatePersonInput: {
                         ...data,
+                        birthdate: data.birthdate === "" ? null : data.birthdate,
                         id: personId,
                     }
                 }
@@ -66,7 +67,10 @@ export const PersonEditor = () => {
         } else {
             createPerson({
                 variables: {
-                    createPersonInput: data
+                    createPersonInput: {
+                        ...data,
+                        birthdate: data.birthdate === "" ? null : data.birthdate,
+                    }
                 }
             })
                 .then((data) => navigate(`/person/${data?.data?.createPerson?.id}`))
@@ -112,7 +116,7 @@ export const PersonEditor = () => {
                 <FormControl margin={"normal"}>
                     <TextField
                         id="birthdate-editor"
-                        label="Next appointment"
+                        label="Birth date"
                         type="date"
                         defaultValue={person.birthdate}
                         sx={{ width: 250 }}

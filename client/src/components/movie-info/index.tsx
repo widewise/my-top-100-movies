@@ -5,7 +5,6 @@ import 'react-multi-carousel/lib/styles.css';
 import { MovieType } from "./movie-type";
 import { fmtDuration} from "../../utils/duration";
 import { Box, Typography } from "@mui/material";
-import LensIcon from '@mui/icons-material/Lens';
 import { ActorsList } from "./actors-list";
 import { MovieOperations } from "./operations";
 import { useAuthToken } from "../../hooks/useAuthToken";
@@ -13,11 +12,14 @@ import { useMovieQuery } from "../../hooks/useMovieQuery";
 
 const MoviePosterImage = styled.img`
   height: 320px;
-  width: auto;
-  max-width: 220px;
+  width: 220px;
   margin: 0 15px 15px 45px;
   border-radius: 0 0 5px 5px;
 `;
+
+const pointIcon = <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24">
+    <circle cx="12" cy="12" r="3" fill="white" />
+</svg>;
 
 export const MovieInfo = () => {
     const { movieId } = useParams();
@@ -64,12 +66,8 @@ export const MovieInfo = () => {
                         }}>
                             {movie?.genres.join(", ")}
                         </Typography>
-                        <LensIcon fontSize={"small"} />
-                        <Typography
-                            component="p"
-                            sx={{
-                                margin: '0 0 0 10px'
-                            }}>
+                        {pointIcon}
+                        <Typography component="p">
                             {fmtDuration(movie?.duration ?? 0)}
                         </Typography>
                     </Box>

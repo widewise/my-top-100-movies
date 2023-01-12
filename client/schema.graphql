@@ -1,0 +1,237 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+"Actor"
+type ActorType {
+    id: ID!
+    movie: MovieType
+    movieId: ID!
+    person: PersonType
+    personId: ID!
+    role: String!
+}
+
+"Check favorite movie"
+type CheckFavoriteMovieType {
+    isFavorite: Boolean!
+}
+
+"Favorite movie"
+type FavoriteType {
+    id: ID!
+    movie: MovieType!
+    userId: ID!
+}
+
+"Movie"
+type MovieType {
+    description: String
+    director: PersonType
+    "Movie duration in minutes"
+    duration: Int
+    genres: [MovieGenreType]
+    id: ID!
+    name: String!
+    posterUrl: String
+    producer: PersonType
+    totalScore: Int
+    type: MovieTypeType!
+    year: Int!
+}
+
+type Mutation {
+    addActorToMovie(input: AddActorToMovieInputType!): ActorType
+    addFavoriteMovie(movieId: ID!): FavoriteType
+    createMovie(input: CreateMovieInputType!): MovieType
+    createPerson(input: CreatePersonInputType!): PersonType
+    deleteUser: UserType
+    login(input: LoginInputType!): UserTokenType
+    rateMovie(input: GiveMovieRateInputType!): RateType
+    registration(input: RegistrationInputType!): UserType
+    removeActorFromMovie(actorId: ID!): ActorType
+    removeFavoriteMovie(movieId: ID!): FavoriteType
+    removeMovie(movieId: ID!): MovieType
+    removePerson(personId: ID!): PersonType
+    updateMovie(input: InputMovieType!): MovieType
+    updatePerson(input: InputPersonType!): PersonType
+    updateUser(input: EditUserInputType!): UserType
+}
+
+"Person"
+type PersonType {
+    biography: String
+    birthdate: Date
+    birthplace: String
+    gender: GenderType!
+    id: ID!
+    name: String!
+    photoUrl: String
+}
+
+type Query {
+    actorsByMovieId(movieId: ID!): [ActorType]
+    checkFavoriteMovie(movieId: ID!): CheckFavoriteMovieType
+    getMovieRate(movieId: ID!): RateType
+    movieById(movieId: ID): MovieType
+    moviesByPersonId(personId: ID!): [ActorType]
+    personById(personId: ID): PersonType
+    personsToAddToMovie(movieId: ID!): [PersonType]
+    profile: UserType
+    top100Movies: [MovieType]
+}
+
+"Movie rate by user"
+type RateType {
+    id: ID!
+    movieId: ID!
+    "Rate from 1 to 10"
+    rate: Int
+    userId: ID!
+}
+
+"User token"
+type UserTokenType {
+    token: String!
+    userId: ID!
+    userType: String!
+}
+
+"User"
+type UserType {
+    description: String
+    email: String
+    id: ID!
+    login: String!
+    password: String
+    status: StatusType!
+    type: UserTypeType!
+}
+
+enum GenderType {
+    Female
+    Male
+}
+
+"Movie genre"
+enum MovieGenreType {
+    Action
+    Adventure
+    Animation
+    Comedy
+    Crime
+    Drama
+    Family
+    Fantasy
+    History
+    Horror
+    Music
+    Mystery
+    Romance
+    ScienceFiction
+    Thriller
+}
+
+enum MovieTypeType {
+    Film
+    TvShow
+}
+
+enum StatusType {
+    Active
+    Removed
+}
+
+enum UserTypeType {
+    Admin
+    User
+}
+
+"A date string, such as 2007-12-03, compliant with the `full-date` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar."
+scalar Date
+
+"Add actor to movie payload definition"
+input AddActorToMovieInputType {
+    movieId: ID!
+    personId: ID!
+    role: String!
+}
+
+"Create movie payload definition"
+input CreateMovieInputType {
+    description: String
+    "Movie duration in minutes"
+    duration: Int
+    genres: [MovieGenreType]
+    name: String!
+    posterUrl: String
+    type: MovieTypeType!
+    year: Int!
+}
+
+"Create person payload definition"
+input CreatePersonInputType {
+    biography: String
+    birthdate: Date
+    birthplace: String
+    gender: GenderType!
+    name: String!
+    photoUrl: String
+}
+
+"Edit user payload definition"
+input EditUserInputType {
+    description: String
+    email: String
+    oldPassword: String
+    password: String
+}
+
+"Give rate to movie payload definition"
+input GiveMovieRateInputType {
+    movieId: ID!
+    "Rate from 1 to 10"
+    rate: Int
+}
+
+"Input movie"
+input InputMovieType {
+    description: String
+    "Movie duration in minutes"
+    duration: Int
+    genres: [MovieGenreType]
+    id: ID!
+    name: String!
+    posterUrl: String
+    totalScore: Int
+    type: MovieTypeType!
+    year: Int!
+}
+
+"Input person"
+input InputPersonType {
+    biography: String
+    birthdate: Date
+    birthplace: String
+    gender: GenderType!
+    id: ID!
+    name: String!
+    photoUrl: String
+}
+
+"Login payload definition"
+input LoginInputType {
+    login: String!
+    password: String
+}
+
+"Registration payload definition"
+input RegistrationInputType {
+    email: String
+    login: String!
+    password: String
+    type: UserTypeType
+}

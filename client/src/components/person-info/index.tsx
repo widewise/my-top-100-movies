@@ -20,8 +20,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 const PersonPhotoImage = styled.img`
   height: 450px;
-  width: auto;
-  max-width: 300px;
+  width: 300px;
   margin: 0 15px 15px 0;
   border-radius: 15px;
 `;
