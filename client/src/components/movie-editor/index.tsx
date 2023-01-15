@@ -96,7 +96,7 @@ export const MovieEditor = () => {
                 </TabList>
             </Box>}
             <TabPanel value="1">
-                <div style={{ margin: "auto", padding: "10px 35%" }}>
+                <div style={{ margin: "auto", padding: "0 35%" }}>
                     {loadingMovie || !movie
                         ? <p>Loading movie ...</p>
                         : <FormContainer>

@@ -33,7 +33,7 @@ export const PersonMovieCard: FunctionComponent<IProps> = ({ movie }: IProps) =>
             flexDirection: 'column',
             justifyContent: 'flex-start',
             width: 140,
-            height: 300,
+            height: 270,
         }}
     >
         <CardMedia
