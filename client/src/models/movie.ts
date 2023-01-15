@@ -21,7 +21,7 @@ export enum EMovieGenre {
     Thriller = 'Thriller',
 }
 export interface IMoviesResult {
-    top100Movies: Array<IMovieListItem>;
+    movies: Array<IMovieListItem>;
 }
 
 export interface IMovieListItem {

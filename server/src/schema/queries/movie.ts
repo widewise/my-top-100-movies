@@ -1,15 +1,33 @@
 import {
-    GraphQLID,
-    GraphQLList,
+    GraphQLID, GraphQLInt,
+    GraphQLList, GraphQLNonNull,
 } from 'graphql';
 import { MovieType } from "../types/movie";
 import { MovieModel } from "../../data/movie";
 
 export const movieQueries = {
-    top100Movies: {
+    movies: {
         type: new GraphQLList(MovieType),
-        resolve: () => {
-            return MovieModel.find().sort({ totalScore: -1 }).limit(100);
+        args: {
+            offset: {
+                type: new GraphQLNonNull(GraphQLInt),
+            },
+            limit: {
+                type: new GraphQLNonNull(GraphQLInt),
+            },
+        },
+        resolve: (_, { offset, limit }) => {
+            if(offset < 0) {
+                throw Error(`Invalid offset value ${offset}`);
+            }
+            if(limit < 1) {
+                throw Error(`Invalid limit value ${limit}`);
+            }
+
+            return MovieModel.find()
+                .sort({ totalScore: -1, name: 1 })
+                .skip(offset)
+                .limit(limit);
         },
     },
     movieById: {

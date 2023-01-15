@@ -77,11 +77,11 @@ type Query {
     checkFavoriteMovie(movieId: ID!): CheckFavoriteMovieType
     getMovieRate(movieId: ID!): RateType
     movieById(movieId: ID): MovieType
+    movies(limit: Int!, offset: Int!): [MovieType]
     moviesByPersonId(personId: ID!): [ActorType]
     personById(personId: ID): PersonType
     personsToAddToMovie(movieId: ID!): [PersonType]
     profile: UserType
-    top100Movies: [MovieType]
 }
 
 "Movie rate by user"
