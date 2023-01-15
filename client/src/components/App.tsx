@@ -1,4 +1,4 @@
-import React from "react";
+import React, { createContext, useState } from "react";
 import {
     createBrowserRouter,
     RouterProvider,
@@ -15,6 +15,8 @@ import { Authentication } from "./authentication";
 import { Profile } from "./profile";
 import { Registration } from "./registration";
 import { PersonEditor } from "./person-editor";
+
+export const ShowSearchContext = createContext(false);
 
 const router = createBrowserRouter([
     {
@@ -61,14 +63,16 @@ const router = createBrowserRouter([
 
 
 function App() {
-
     const client = useAppApolloClient();
+    const [showSearch, setShowSearch] = useState(false);
 
     return (
     <div className="App">
         <ApolloProvider client={client}>
-            <MainBar />
-            <RouterProvider router={router} />
+            <ShowSearchContext.Provider value={showSearch}>
+                <MainBar setShowSearchCallback={(val) => setShowSearch(val)} />
+                <RouterProvider router={router} />
+            </ShowSearchContext.Provider>
         </ApolloProvider>
     </div>
   );

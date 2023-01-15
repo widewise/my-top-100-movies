@@ -51,7 +51,6 @@ export const PersonEditor = () => {
     const [ updatePerson ] = useMutation(UPDATE_PERSON);
 
     const onSubmit = (data: any) => {
-        console.log({data});
         if(personId) {
             updatePerson({
                 variables: {

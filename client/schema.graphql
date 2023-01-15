@@ -77,7 +77,7 @@ type Query {
     checkFavoriteMovie(movieId: ID!): CheckFavoriteMovieType
     getMovieRate(movieId: ID!): RateType
     movieById(movieId: ID): MovieType
-    movies(limit: Int!, offset: Int!): [MovieType]
+    movies(limit: Int!, offset: Int!, search: String): [MovieType]
     moviesByPersonId(personId: ID!): [ActorType]
     personById(personId: ID): PersonType
     personsToAddToMovie(movieId: ID!): [PersonType]

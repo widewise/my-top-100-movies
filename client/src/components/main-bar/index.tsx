@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, FunctionComponent } from "react";
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -12,6 +12,8 @@ import MenuItem from '@mui/material/MenuItem';
 import { Button } from "@mui/material";
 import { Link } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
+import ClearIcon from '@mui/icons-material/Clear';
 import { useAuthToken } from "../../hooks/useAuthToken";
 import { useUserType } from "../../hooks/useUserType";
 
@@ -41,14 +43,25 @@ const logoIcon = <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 273.42 35.
     </g>
 </svg>;
 
-export const MainBar = () => {
+interface IProps {
+    setShowSearchCallback: (value: boolean) => void;
+}
+
+export const MainBar: FunctionComponent<IProps> = ({ setShowSearchCallback }: IProps) => {
     const [authToken, removeAuthToken] = useAuthToken();
     const [userType, removeUserType] = useUserType();
 
-    const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-    const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+    const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
+    const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
+    const [showSearch, setShowSearch] = useState(false);
+
     const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElUser(event.currentTarget);
+    };
+
+    const handleShowSearchClick = (show: boolean) => {
+        setShowSearch(show);
+        setShowSearchCallback(show);
     };
 
     const handleCloseUserMenu = (menuKey: string) => {
@@ -179,7 +192,22 @@ export const MainBar = () => {
                         </Link>))}
                 </Box>
 
-                <Box sx={{ flexGrow: 0 }}>
+                <Box sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    flexGrow: 0 }}>
+                    {!showSearch
+                        ? <SearchIcon
+                            sx={{ marginRight: 3 }}
+                            fontSize="large"
+                            onClick={() => handleShowSearchClick(true)}
+                        />
+                        : <ClearIcon
+                            sx={{ marginRight: 3 }}
+                            fontSize="large"
+                            onClick={() => handleShowSearchClick(false)}
+                        />
+                    }
                     {(!authToken || authToken === "undefined") && (<>
                         <Button
                             variant="text"
